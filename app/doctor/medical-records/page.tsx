@@ -12,7 +12,7 @@ import {
   Calendar,
   User,
 } from "lucide-react";
-import { DoctorLayout } from "@/components/doctor-layout";
+import DoctorLayout from "@/components/doctor-layout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
