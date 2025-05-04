@@ -1,16 +1,37 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Search, Filter, Plus, FileText, Download, Eye, Calendar, User } from "lucide-react"
-import { DoctorLayout } from "@/components/doctor-layout"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Search,
+  Filter,
+  Plus,
+  FileText,
+  Download,
+  Eye,
+  Calendar,
+  User,
+} from "lucide-react";
+import { DoctorLayout } from "@/components/doctor-layout";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -19,20 +40,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { useDoctorData } from "@/contexts/doctor-data-context"
-import { format } from "date-fns"
+} from "@/components/ui/dialog";
+import { useDoctorData } from "@/contexts/doctor-data-context";
+import { format } from "date-fns";
 
 export default function DoctorMedicalRecordsPage() {
-  const router = useRouter()
-  const [doctor, setDoctor] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [recordTypeFilter, setRecordTypeFilter] = useState("all")
-  const [selectedRecord, setSelectedRecord] = useState<any>(null)
-  const [isViewRecordOpen, setIsViewRecordOpen] = useState(false)
+  const router = useRouter();
+  const [doctor, setDoctor] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [recordTypeFilter, setRecordTypeFilter] = useState("all");
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [isViewRecordOpen, setIsViewRecordOpen] = useState(false);
 
-  const { patients } = useDoctorData()
+  const { patients } = useDoctorData();
 
   // Mock medical records data
   const [medicalRecords, setMedicalRecords] = useState([
@@ -45,7 +66,8 @@ export default function DoctorMedicalRecordsPage() {
       date: "2023-05-15",
       title: "Blood Test Results",
       description: "Complete blood count and metabolic panel",
-      content: "WBC: 7.2, RBC: 4.8, Hemoglobin: 14.2, Hematocrit: 42%, Platelets: 250,000",
+      content:
+        "WBC: 7.2, RBC: 4.8, Hemoglobin: 14.2, Hematocrit: 42%, Platelets: 250,000",
       doctor: "Dr. Sarah Johnson",
     },
     {
@@ -57,7 +79,8 @@ export default function DoctorMedicalRecordsPage() {
       date: "2023-05-10",
       title: "Initial Consultation",
       description: "Patient presented with symptoms of seasonal allergies",
-      content: "Patient reports sneezing, runny nose, and itchy eyes for the past week. Prescribed antihistamine.",
+      content:
+        "Patient reports sneezing, runny nose, and itchy eyes for the past week. Prescribed antihistamine.",
       doctor: "Dr. Sarah Johnson",
     },
     {
@@ -93,30 +116,35 @@ export default function DoctorMedicalRecordsPage() {
       date: "2023-04-20",
       title: "Appendectomy Report",
       description: "Laparoscopic appendectomy procedure",
-      content: "Procedure performed without complications. Patient recovered well post-op.",
+      content:
+        "Procedure performed without complications. Patient recovered well post-op.",
       doctor: "Dr. Sarah Johnson",
     },
-  ])
+  ]);
 
   useEffect(() => {
     // Check if doctor is logged in
-    const doctorData = localStorage.getItem("doctorUser")
+    const doctorData = localStorage.getItem("doctorUser");
 
     if (doctorData) {
-      setDoctor(JSON.parse(doctorData))
+      setDoctor(JSON.parse(doctorData));
     } else {
-      router.push("/doctor/login")
+      router.push("/doctor/login");
     }
 
-    setLoading(false)
-  }, [router])
+    setLoading(false);
+  }, [router]);
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
   }
 
   if (!doctor) {
-    return null // Router will redirect
+    return null; // Router will redirect
   }
 
   // Filter records based on search term and record type
@@ -124,59 +152,65 @@ export default function DoctorMedicalRecordsPage() {
     const matchesSearch =
       record.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.description.toLowerCase().includes(searchTerm.toLowerCase())
+      record.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesType = recordTypeFilter === "all" || record.recordType.toLowerCase() === recordTypeFilter.toLowerCase()
+    const matchesType =
+      recordTypeFilter === "all" ||
+      record.recordType.toLowerCase() === recordTypeFilter.toLowerCase();
 
-    return matchesSearch && matchesType
-  })
+    return matchesSearch && matchesType;
+  });
 
   const handleViewRecord = (record: any) => {
-    setSelectedRecord(record)
-    setIsViewRecordOpen(true)
-  }
+    setSelectedRecord(record);
+    setIsViewRecordOpen(true);
+  };
 
   const getRecordTypeIcon = (type: string) => {
     switch (type.toLowerCase()) {
       case "lab results":
-        return <FileText className="h-5 w-5 text-healthcare-blue" />
+        return <FileText className="h-5 w-5 text-healthcare-blue" />;
       case "diagnosis":
-        return <FileText className="h-5 w-5 text-healthcare-green" />
+        return <FileText className="h-5 w-5 text-healthcare-green" />;
       case "imaging":
-        return <FileText className="h-5 w-5 text-healthcare-purple" />
+        return <FileText className="h-5 w-5 text-healthcare-purple" />;
       case "prescription":
-        return <FileText className="h-5 w-5 text-healthcare-pill-orange" />
+        return <FileText className="h-5 w-5 text-healthcare-pill-orange" />;
       case "surgery":
-        return <FileText className="h-5 w-5 text-healthcare-red" />
+        return <FileText className="h-5 w-5 text-healthcare-red" />;
       default:
-        return <FileText className="h-5 w-5 text-healthcare-blue" />
+        return <FileText className="h-5 w-5 text-healthcare-blue" />;
     }
-  }
+  };
 
   const getRecordTypeColor = (type: string) => {
     switch (type.toLowerCase()) {
       case "lab results":
-        return "bg-healthcare-blue/20 text-healthcare-blue"
+        return "bg-healthcare-blue/20 text-healthcare-blue";
       case "diagnosis":
-        return "bg-healthcare-green/20 text-healthcare-green"
+        return "bg-healthcare-green/20 text-healthcare-green";
       case "imaging":
-        return "bg-healthcare-purple/20 text-healthcare-purple"
+        return "bg-healthcare-purple/20 text-healthcare-purple";
       case "prescription":
-        return "bg-healthcare-pill-orange/20 text-healthcare-pill-orange"
+        return "bg-healthcare-pill-orange/20 text-healthcare-pill-orange";
       case "surgery":
-        return "bg-healthcare-red/20 text-healthcare-red"
+        return "bg-healthcare-red/20 text-healthcare-red";
       default:
-        return "bg-healthcare-blue/20 text-healthcare-blue"
+        return "bg-healthcare-blue/20 text-healthcare-blue";
     }
-  }
+  };
 
   return (
     <DoctorLayout>
       <div className="page-container">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
-            <h1 className="page-title text-healthcare-scrubs-green">Medical Records</h1>
-            <p className="page-subtitle">View and manage patient medical records</p>
+            <h1 className="page-title text-healthcare-scrubs-green">
+              Medical Records
+            </h1>
+            <p className="page-subtitle">
+              View and manage patient medical records
+            </p>
           </div>
           <div className="flex items-center space-x-2 mt-4 md:mt-0">
             <Dialog>
@@ -189,11 +223,15 @@ export default function DoctorMedicalRecordsPage() {
               <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                   <DialogTitle>Create New Medical Record</DialogTitle>
-                  <DialogDescription>Add a new medical record for a patient</DialogDescription>
+                  <DialogDescription>
+                    Add a new medical record for a patient
+                  </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   {/* Form fields would go here */}
-                  <p className="text-center text-muted-foreground">Record creation form would go here</p>
+                  <p className="text-center text-muted-foreground">
+                    Record creation form would go here
+                  </p>
                 </div>
                 <DialogFooter>
                   <Button variant="outline">Cancel</Button>
@@ -215,7 +253,10 @@ export default function DoctorMedicalRecordsPage() {
             />
           </div>
           <div className="flex gap-2">
-            <Select value={recordTypeFilter} onValueChange={setRecordTypeFilter}>
+            <Select
+              value={recordTypeFilter}
+              onValueChange={setRecordTypeFilter}
+            >
               <SelectTrigger className="w-[180px]">
                 <Filter className="mr-2 h-4 w-4" />
                 <SelectValue placeholder="Record Type" />
@@ -243,18 +284,20 @@ export default function DoctorMedicalRecordsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>All Medical Records</CardTitle>
-                <CardDescription>Complete list of patient medical records</CardDescription>
+                <CardDescription>
+                  Complete list of patient medical records
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {filteredRecords.map((record) => (
                     <div
                       key={record.id}
-                      className="flex items-center justify-between p-3 border rounded-lg card-hover"
+                      className="flex flex-col md:flex-row md:items-center justify-between bg-white p-4 rounded-lg border hover:shadow-md transition-shadow"
                     >
-                      <div className="flex items-center space-x-3">
-                        <Avatar>
-                          <AvatarImage src={record.patientImage || "/placeholder.svg"} alt={record.patientName} />
+                      <div className="flex items-center mb-2 md:mb-0">
+                        <Avatar className="h-10 w-10 mr-3">
+                          <AvatarImage src={record.patientImage} />
                           <AvatarFallback>
                             {record.patientName
                               .split(" ")
@@ -263,33 +306,50 @@ export default function DoctorMedicalRecordsPage() {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-medium">{record.title}</p>
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <User className="mr-1 h-3 w-3" />
-                            <span>{record.patientName}</span>
-                            <span className="mx-1">•</span>
-                            <Calendar className="mr-1 h-3 w-3" />
-                            <span>{format(new Date(record.date), "MMM d, yyyy")}</span>
+                          <div className="font-medium">{record.title}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {record.description}
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">{record.description}</p>
+                          <div className="mt-1 flex items-center">
+                            <User className="h-3 w-3 mr-1 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">
+                              {record.patientName}
+                            </span>
+                            <Calendar className="h-3 w-3 ml-2 mr-1 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">
+                              {format(new Date(record.date), "MMM d, yyyy")}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <Badge className={getRecordTypeColor(record.recordType)}>{record.recordType}</Badge>
-                        <Button variant="outline" size="sm" onClick={() => handleViewRecord(record)}>
-                          <Eye className="mr-1 h-3 w-3" />
-                          View
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Download className="mr-1 h-3 w-3" />
-                          Download
-                        </Button>
+                      <div className="flex items-center mt-3 md:mt-0">
+                        <Badge
+                          variant="secondary"
+                          className={getRecordTypeColor(record.recordType)}
+                        >
+                          {getRecordTypeIcon(record.recordType)}
+                          <span className="ml-1">{record.recordType}</span>
+                        </Badge>
+                        <div className="flex ml-4">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleViewRecord(record)}
+                            className="text-healthcare-scrubs-green hover:text-healthcare-scrubs-green/80 hover:bg-healthcare-scrubs-green/10"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-healthcare-blue hover:text-healthcare-blue/80 hover:bg-healthcare-blue/10"
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
-                  {filteredRecords.length === 0 && (
-                    <div className="text-center py-4 text-muted-foreground">No records found</div>
-                  )}
                 </div>
               </CardContent>
             </Card>
@@ -298,33 +358,98 @@ export default function DoctorMedicalRecordsPage() {
           <TabsContent value="recent">
             <Card>
               <CardHeader>
-                <CardTitle>Recent Records</CardTitle>
-                <CardDescription>Records from the past 30 days</CardDescription>
+                <CardTitle>Recent Medical Records</CardTitle>
+                <CardDescription>
+                  Records created or updated in the last 30 days
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {filteredRecords
-                    .filter((record) => {
-                      const recordDate = new Date(record.date)
-                      const thirtyDaysAgo = new Date()
-                      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-                      return recordDate >= thirtyDaysAgo
-                    })
-                    .map((record) => (
-                      <div
-                        key={record.id}
-                        className="flex items-center justify-between p-3 border rounded-lg card-hover"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <Avatar>
-                            <AvatarImage src={record.patientImage || "/placeholder.svg"} alt={record.patientName} />
-                            <AvatarFallback>
-                              {record.patientName
-                                .split(" ")
-                                .map((n: string) => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium">{record.title}</p>
-                            <div className="flex items-\
+                <div className="text-center text-muted-foreground py-8">
+                  Recent records would be displayed here
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="by-patient">
+            <Card>
+              <CardHeader>
+                <CardTitle>Records by Patient</CardTitle>
+                <CardDescription>
+                  View records organized by patient
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center text-muted-foreground py-8">
+                  Patient-organized records would be displayed here
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        <Dialog open={isViewRecordOpen} onOpenChange={setIsViewRecordOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>{selectedRecord?.title}</DialogTitle>
+              <DialogDescription>
+                {selectedRecord?.description}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+              <div className="flex items-center mb-4">
+                <Avatar className="h-10 w-10 mr-3">
+                  <AvatarImage src={selectedRecord?.patientImage} />
+                  <AvatarFallback>
+                    {selectedRecord?.patientName
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <div className="font-medium">
+                    {selectedRecord?.patientName}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {selectedRecord?.date
+                      ? format(new Date(selectedRecord.date), "MMMM d, yyyy")
+                      : ""}
+                  </div>
+                </div>
+                <Badge
+                  variant="secondary"
+                  className={
+                    selectedRecord
+                      ? getRecordTypeColor(selectedRecord.recordType)
+                      : ""
+                  }
+                  style={{ marginLeft: "auto" }}
+                >
+                  {selectedRecord?.recordType}
+                </Badge>
+              </div>
+              <div className="border-t pt-4">
+                <h4 className="font-semibold mb-2">Record Content</h4>
+                <p className="text-sm">{selectedRecord?.content}</p>
+              </div>
+              <div className="border-t mt-4 pt-4">
+                <h4 className="font-semibold mb-2">Attending Physician</h4>
+                <p className="text-sm">{selectedRecord?.doctor}</p>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsViewRecordOpen(false)}
+              >
+                Close
+              </Button>
+              <Button className="btn-doctor">Download Record</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </DoctorLayout>
+  );
+}
